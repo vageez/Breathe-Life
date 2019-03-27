@@ -1,9 +1,0 @@
-[
-{"name":"jean","age":"45","gender":"M","smoker":"S","email":"jean@videotron.ca","height":"179","weight":"90","health":"[ANXIETY,HEART]","alcohol":"2","postalcode":"H1S 3Y3","policyrequested":"200000.00"},
-{"name":"sylvie","age":"33","gender":"F","smoker":"NS","email":"sylvie@textis.com","height":"155","weight":"76","health":"[SURGERY]","alcohol":"3","postalcode":"H4S 2D3","policyrequested":"150000.00"},
-{"name":"robert","age":"44","gender":"M","smoker":"NS","email":"robbie@outlook.com","height":"175","weight":"60","health":"[HEART]","alcohol":"25","postalcode":"H1S 4F2","policyrequested":"345000.00"},
-{"name":"nancy","age":"49","gender":"F","smoker":"NS","email":"nancy@varneno.com","height":"161","weight":"65","health":"[]","alcohol":"5","postalcode":"W3C 1B3","policyrequested":"540000.00"},
-{"name":"henry","age":"21","gender":"M","smoker":"S","email":"henry@partyhouse.com","height":"184","weight":"52","health":"[]","alcohol":"25","postalcode":"H4L 5Y2","policyrequested":"125000.00"},
-{"name":"ali","age":"33","gender":"M","smoker":"NS","email":"ali2351@gmail.com","height":"182","weight":"76","health":"[]","alcohol":"10","postalcode":"H2V 6F3","policyrequested":"350000.00"},
-{"name":"herve","age":"41","gender":"M","smoker":"S","email":"herve@yahoo.com","height":"179","weight":"84","health":"[]","alcohol":"12","postalcode":"H5S 8N8","policyrequested":"210000.00"}
-]
