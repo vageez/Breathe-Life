@@ -1,4 +1,3 @@
-
 const pargeHealthData = health =>
   health.slice(1, -1).length > 0 ? health.slice(1, -1).split(',') : []
 
@@ -59,47 +58,56 @@ const calculatePremiumMonth = coveragePrice => policyrequested =>
 const calculatePremiumYear = coveragePrice => policyrequested =>
   (((coveragePrice * policyrequested) / 1000) * 12).toFixed(2)
 
-const processData = data => {
-  return [data]
-    .map(r => ({
-      ...r,
-      health: pargeHealthData(r.health),
-      weight: parseInt(r.weight),
-      height: parseInt(r.height),
-      age: parseInt(r.age),
-      alcohol: parseInt(r.alcohol),
-      policyrequested: parseFloat(r.policyrequested),
-      score: 0,
-    }))
-    .map(data => ({
-      ...data,
-      coveragePrice: rateMap[assignAgeRange(parseInt(data.age))][data.smoker]
-    }))
-    .map(data => ({
-      ...data,
-      bmi: calculateBmi(data.weight)(data.height)
-    }))
-    .map(data => ({
-      ...data,
-      score:
-        healthPenalty15(data.health) +
-        healthPenalty25(data.health) +
-        healthPenalty30(data.health) +
-        bmiPenalty(data.bmi) +
-        smokerPenalty(data.smoker) +
-        alcoholPenalty(data.alcohol)
-    }))
-    .map(data => ({
-      name: data.name,
-      bmi: data.bmi,
-      score: data.score,
-      premium: {
-        monthly: calculatePremiumMonth(data.coveragePrice)(
-          data.policyrequested
-        ),
-        year: calculatePremiumYear(data.coveragePrice)(data.policyrequested)
-      }
-    }))
-}
+const createBaseData = person => ({
+  ...person,
+  health: pargeHealthData(person.health),
+  weight: parseInt(person.weight),
+  height: parseInt(person.height),
+  age: parseInt(person.age),
+  alcohol: parseInt(person.alcohol),
+  policyrequested: parseFloat(person.policyrequested),
+  score: 0
+})
+
+const addCoveragePrice = person => ({
+  ...person,
+  coveragePrice: rateMap[assignAgeRange(parseInt(person.age))][person.smoker]
+})
+
+const addBmiCalculation = person => ({
+  ...person,
+  bmi: calculateBmi(person.weight)(person.height)
+})
+
+const addScore = person => ({
+  ...person,
+  score:
+    healthPenalty15(person.health) +
+    healthPenalty25(person.health) +
+    healthPenalty30(person.health) +
+    bmiPenalty(person.bmi) +
+    smokerPenalty(person.smoker) +
+    alcoholPenalty(person.alcohol)
+})
+
+const addPremium = person => ({
+  name: person.name,
+  bmi: person.bmi,
+  score: person.score,
+  premium: {
+    monthly: calculatePremiumMonth(person.coveragePrice)(
+      person.policyrequested
+    ),
+    year: calculatePremiumYear(person.coveragePrice)(person.policyrequested)
+  }
+})
+
+const processData = data =>
+  [data]
+    .map(createBaseData)
+    .map(addCoveragePrice)
+    .map(addBmiCalculation)
+    .map(addScore)
+    .map(addPremium)
 
 module.exports = { processData }
