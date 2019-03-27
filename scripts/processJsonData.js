@@ -14,7 +14,7 @@ const processJsonData = inputFileName => outPutFile => {
   inputStream
     .pipe(transformStream)
     .on('data', data => {
-      var processedData = processData(data)
+      var processedData = processData(data)[0]
       transformStream2.write(processedData)
     })
     .on('end', () => transformStream2.end())
