@@ -1,28 +1,25 @@
+const healthRules = require('./rulesConfig') //?
+
 const pargeHealthData = health =>
   health.slice(1, -1).length > 0 ? health.slice(1, -1).split(',') : []
 
 const calculateBmi = weight => height => weight / Math.pow(height / 100, 2)
 
-const healthPenalty15 = health => {
-  const penalty = -15
-  let count = 0
-  count = health.filter(x => x === 'DEPRESSION' || 'ANXIETY').length
-  return count * penalty
-}
-
-const healthPenalty25 = health => {
-  const penalty = -25
-  let count = 0
-  count = health.filter(x => x === 'SURGERY').length
-  return count * penalty
-}
-
-const healthPenalty30 = health => {
-  const penalty = -30
-  let count = 0
-  count = health.filter(x => x === 'HEART').length
-  return count * penalty
-}
+/**
+ * Reduce health rules against customer health to get health score.
+ * @param rules [{health: ['A'], points: -15},{health: ['B'], points: -30}]
+ * @param health ['A']
+ * 
+ */
+const healthScore = rules => health => health.length > 0 ? rules.reduce((acc, rule) => {
+  rule.health.reduce((d, issue) => {
+    if (health.indexOf(issue) > -1) {
+      d.push(rule.point)
+    }
+    return d
+  }, acc)
+  return acc
+},[]).reduce((accumulator, a) => accumulator + a, 0) : 0
 
 const bmiPenalty = bmi =>
   bmi < 18.5 ? -15 : bmi > 25.0 ? -25 : bmi < 30.0 ? -30 : 0
@@ -82,9 +79,7 @@ const addBmiCalculation = person => ({
 const addScore = person => ({
   ...person,
   score:
-    healthPenalty15(person.health) +
-    healthPenalty25(person.health) +
-    healthPenalty30(person.health) +
+    healthScore(healthRules)(person.health) +
     bmiPenalty(person.bmi) +
     smokerPenalty(person.smoker) +
     alcoholPenalty(person.alcohol)
