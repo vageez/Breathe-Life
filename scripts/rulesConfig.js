@@ -6,7 +6,6 @@ const healthRules = [
       less: 18.5
     },
     alcohol: {
-      greater: 10,
     },
     smoker: false
   },
@@ -28,6 +27,7 @@ const healthRules = [
       greater: 30.0,
     },
     alcohol: {
+      greater: 25,
     },
     smoker: false
   }

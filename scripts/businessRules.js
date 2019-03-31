@@ -1,17 +1,11 @@
-const healthRules = require('./rulesConfig') //?
+const healthRules = require('./rulesConfig') // ?
 
-const pargeHealthData = health =>
+const parseHealthData = health =>
   health.slice(1, -1).length > 0 ? health.slice(1, -1).split(',') : []
 
 const calculateBmi = weight => height => weight / Math.pow(height / 100, 2)
 
-/**
- * Reduce health rules against customer health to get health score.
- * @param rules [{health: ['A'], points: -15},{health: ['B'], points: -30}]
- * @param health ['A']
- * 
- */
-const healthScore = rules => health => health.length > 0 ? rules.reduce((acc, rule) => {
+const calculateHealthScore = health => (acc, rule) => {
   rule.health.reduce((d, issue) => {
     if (health.indexOf(issue) > -1) {
       d.push(rule.point)
@@ -19,31 +13,63 @@ const healthScore = rules => health => health.length > 0 ? rules.reduce((acc, ru
     return d
   }, acc)
   return acc
-},[]).reduce((acc, a) => acc + a, 0) : 0
+}
 
-const bmiPenalty = rules => bmi => rules.reduce((a, c) => {
-  a.push(c.bmi.greater ? 
-      bmi > c.bmi.greater ? c.point : 0 : 0 + c.bmi.less ? 
-      bmi < c.bmi.less ? c.point : 0 : 0)
-  return a    
-},[]).reduce((acc, a) => acc + a, 0)
+const healthScore = rules => health =>
+  health.length > 0
+    ? rules
+      .reduce(calculateHealthScore(health), [])
+      .reduce((acc, a) => acc + a, 0)
+    : 0
 
-const smokerPenalty = rules => smoker => !smoker ? 0 : rules.reduce((a, c) => {
-  a.push(c.smoker && c.point || 0)
+const calculateBmiPenalty = bmi => (a, c) => {
+  a.push(
+    c.bmi.greater
+      ? bmi > c.bmi.greater
+        ? c.point
+        : 0
+      : 0 + c.bmi.less
+        ? bmi < c.bmi.less
+          ? c.point
+          : 0
+        : 0
+  )
   return a
-}, []).reduce((acc, a) => acc + a, 0)
+}
+
+const bmiPenalty = rules => bmi =>
+  rules.reduce(calculateBmiPenalty(bmi), []).reduce((acc, a) => acc + a, 0)
+
+const smokerPenalty = rules => smoker =>
+  !smoker
+    ? 0
+    : rules
+      .reduce((a, c) => {
+        a.push((c.smoker && c.point) || 0)
+        return a
+      }, [])
+      .reduce((acc, a) => acc + a, 0)
 
 const alcoholPenalty = rules => alcohol => {
   // Get penalty for alchohol consumption
-  const res = rules.reduce((a, c) => { 
-      a.push(c.alcohol.greater ? 
-          alcohol > c.alcohol.greater ? c.point : 0 : 0 + 
-      c.alcohol.less ? 
-          alcohol < c.alcohol.less ? c.point : 0 : 0)
-      return a    
-  }, []).sort()
+  const res = rules
+    .reduce((a, c) => {
+      a.push(
+        c.alcohol.greater
+          ? alcohol > c.alcohol.greater
+            ? c.point
+            : 0
+          : 0 + c.alcohol.less
+            ? alcohol < c.alcohol.less
+              ? c.point
+              : 0
+            : 0
+      )
+      return a
+    }, [])
+
   // Return the highest penalty
-  return res[res.length -1]
+  return Math.min(...res)
 }
 
 const assignAgeRange = age =>
@@ -75,13 +101,13 @@ const calculatePremiumYear = coveragePrice => policyrequested =>
 
 const createBaseData = person => ({
   ...person,
-  health: pargeHealthData(person.health),
+  health: parseHealthData(person.health),
   weight: parseInt(person.weight),
   height: parseInt(person.height),
   age: parseInt(person.age),
   alcohol: parseInt(person.alcohol),
   policyrequested: parseFloat(person.policyrequested),
-  isSmoker: person.smoker === 'S' ? true : false,
+  isSmoker: person.smoker === 'S',
   score: 0
 })
 
