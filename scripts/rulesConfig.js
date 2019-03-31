@@ -1,14 +1,12 @@
-module.exports = healthRules = [
+const healthRules = [
   {
     point: -15,
     health: ['DEPRESSION', 'ANXIETY'],
     bmi: {
-      greaterThan: undefined,
-      lessThan: 18.5
+      less: 18.5
     },
     alcohol: {
-      greaterThan: 10,
-      lessThan: undefined
+      greater: 10,
     },
     smoker: false
   },
@@ -16,12 +14,10 @@ module.exports = healthRules = [
     point: -25,
     health: ['SURGERY'],
     bmi: {
-      greaterThan: 25.0,
-      lessThan: undefined
+      greater: 25.0,
     },
     alcohol: {
-      greaterThan: 10,
-      lessThan: undefined
+      greater: 10,
     },
     smoker: true
   },
@@ -29,13 +25,12 @@ module.exports = healthRules = [
     point: -30,
     health: ['HEART'],
     bmi: {
-      greaterThan: 25.0,
-      lessThan: undefined
+      greater: 30.0,
     },
     alcohol: {
-      greaterThan: undefined,
-      lessThan: undefined
     },
     smoker: false
   }
 ]
+
+module.exports = healthRules

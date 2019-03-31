@@ -19,14 +19,32 @@ const healthScore = rules => health => health.length > 0 ? rules.reduce((acc, ru
     return d
   }, acc)
   return acc
-},[]).reduce((accumulator, a) => accumulator + a, 0) : 0
+},[]).reduce((acc, a) => acc + a, 0) : 0
 
-const bmiPenalty = bmi =>
-  bmi < 18.5 ? -15 : bmi > 25.0 ? -25 : bmi < 30.0 ? -30 : 0
+const bmiPenalty = rules => bmi => rules.reduce((a, c) => {
+  a.push(c.bmi.greater ? 
+      bmi > c.bmi.greater ? c.point : 0 : 0 + c.bmi.less ? 
+      bmi < c.bmi.less ? c.point : 0 : 0)
+  return a    
+},[]).reduce((acc, a) => acc + a, 0)
 
-const smokerPenalty = smoker => (smoker === 'S' ? -25 : 0)
-const alcoholPenalty = consumption =>
-  consumption > 10 ? -25 : consumption > 25 ? -30 : 0
+const smokerPenalty = rules => smoker => !smoker ? 0 : rules.reduce((a, c) => {
+  a.push(c.smoker && c.point || 0)
+  return a
+}, []).reduce((acc, a) => acc + a, 0)
+
+const alcoholPenalty = rules => alcohol => {
+  // Get penalty for alchohol consumption
+  const res = rules.reduce((a, c) => { 
+      a.push(c.alcohol.greater ? 
+          alcohol > c.alcohol.greater ? c.point : 0 : 0 + 
+      c.alcohol.less ? 
+          alcohol < c.alcohol.less ? c.point : 0 : 0)
+      return a    
+  }, []).sort()
+  // Return the highest penalty
+  return res[res.length -1]
+}
 
 const assignAgeRange = age =>
   age >= 18 && age <= 39
@@ -63,6 +81,7 @@ const createBaseData = person => ({
   age: parseInt(person.age),
   alcohol: parseInt(person.alcohol),
   policyrequested: parseFloat(person.policyrequested),
+  isSmoker: person.smoker === 'S' ? true : false,
   score: 0
 })
 
@@ -80,9 +99,9 @@ const addScore = person => ({
   ...person,
   score:
     healthScore(healthRules)(person.health) +
-    bmiPenalty(person.bmi) +
-    smokerPenalty(person.smoker) +
-    alcoholPenalty(person.alcohol)
+    bmiPenalty(healthRules)(person.bmi) +
+    smokerPenalty(healthRules)(person.isSmoker) +
+    alcoholPenalty(healthRules)(person.alcohol)
 })
 
 const addPremium = person => ({
