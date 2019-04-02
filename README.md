@@ -1,15 +1,17 @@
 # Breathe-Life
 Whats happening here?
 
-Creating a stream to read the initial CSV file and converting it to a JSON file.  
+Creating an async stream to read the initial CSV. 
+Converting CSV to JSON objects line by line.
+Then finally processing JSON object and applying business rules.
 
-Creating an async stream to read the JSON file apply business logic and write to output file.  
-
-businessRules.js contains all logic outlined in the Instructions.
+index.js contains the async stream transfer and creation of output file.  
+rulesConfig.js represents insurance company rules.  
+businessRules.js represents business logic and application of rules against the data.  
 
 ### Run the program
 
 npm i  
 npm run start  
 
-Reaults in an output.json file.
+Results in an output.json file.

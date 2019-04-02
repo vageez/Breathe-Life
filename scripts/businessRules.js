@@ -148,6 +148,6 @@ const processData = data =>
     .map(addCoveragePrice)
     .map(addBmiCalculation)
     .map(addScore)
-    .map(addPremium)
+    .map(addPremium)[0]
 
 module.exports = { processData }

@@ -69,22 +69,11 @@ Additional Requirements if you can manage
 
 * assume the rules above describe one insurance product, and make your code support multiple products
 
-- Support multiple companies, would run user against multiple company configuration/rules 
-
-- I would create a configuration per insurance company which is applied in tandem with the customer. So the rules come from a configuration instead of being static.
-
-- the application would map to the specified insurance companies rules.
-
-
 * make it easy to parametrize the points debit, the cost multipliers and the conditions (> BMI >, health, etc.)
-- thinking. 
-- points debt function would take configuration and apply it until all cases are executed
 
 * have the rules be expressed as a data file that you load
-- Same as configuration above.
 
 * make the rules configurable at runtime
-- 
 
 Evaluation
 ----------
@@ -100,13 +89,7 @@ Bonus points for:
 
 * Error handling
 
-Log them to the server. 
-Good practice to Throw your own errors.
-try catch. expect things to fail and code around.
-
 * Data validation
-Currently using sanctuary JS. Sactuary Def Library
-Handles what type is expected, and has a default return value.
 
 * Description of how you would change your code to make the Additional Requirements possible
 
